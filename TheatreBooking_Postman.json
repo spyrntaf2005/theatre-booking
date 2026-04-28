@@ -1,0 +1,320 @@
+{
+  "info": {
+    "name": "Theatre Booking API",
+    "description": "Συλλογή με όλα τα API endpoints για την εφαρμογή Theatre Booking (CN6035).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test@example.com\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Login User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.collectionVariables.set(\"token\", jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Public Data (Theatres & Shows)",
+      "item": [
+        {
+          "name": "Get All Theatres",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/theatres",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "theatres"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All Shows",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/shows",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "shows"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Showtimes for Show",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/showtimes?showId=1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "showtimes"
+              ],
+              "query": [
+                {
+                  "key": "showId",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Seats for Showtime",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/seats?showtimeId=1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "seats"
+              ],
+              "query": [
+                {
+                  "key": "showtimeId",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. User & Reservations (Requires Token)",
+      "item": [
+        {
+          "name": "Get User Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/user/profile",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user",
+                "profile"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Reservation",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"showtime_id\": 1,\n  \"seats_reserved\": [\"A1\", \"A2\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/reservations",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "reservations"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get User Reservations",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/user/reservations",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user",
+                "reservations"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Cancel Reservation",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/reservations/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "reservations",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Reservation Permanently",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/user/reservations/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user",
+                "reservations",
+                "1"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
